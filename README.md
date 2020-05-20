@@ -31,19 +31,21 @@ $vim Dockerfile
 
 
 ```
+FROM centos:7
 
-FROM centos
+RUN yum install python36 -y
+RUN pip3 install keras tensorflow
 
 RUN yum install wget -y
 RUN wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
 RUN rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
-RUN yum install java -y && yum install jenkins -y && yum install git -y
+RUN yum install git -y
 
-RUN yum install httpd && yum install docker 
-RUN docker pull httpd
+WORKDIR /home/Keras
+
+COPY /home/aman/Keras/new_imges/* /home/Keras/
 
 RUN echo -e "jenkins ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-
 
 CMD ["java", "-jar", "/usr/lib/jenkins/jenkins.war"]
 ````
@@ -53,30 +55,13 @@ CMD ["java", "-jar", "/usr/lib/jenkins/jenkins.war"]
 lets make build image using dockerfile with web service (httpd)
 
 ```
-$docker build -t webserver_image .
+$docker build -t CNN_Keras .
 ```
 note: dot means current directory
 
 
-## launch jenkins Images
 
-launch jenkins image with port 
 
-```
-docker run -it --privileged -p 9999:8080 -v /:/host webserver_image
-```
-
-it will automatic show initialAdminPassword
-
-```
-Jenkins initial setup is required. An admin user has been created and a password generated.
-Please use the following password to proceed to installation:
-
-9cbf4390692345a9865661c47737d76a
-
-This may also be found at: /root/.jenkins/secrets/initialAdminPassword
-```
----
 # Now we Create job in Jenkins
 
 ## JOB 1
@@ -86,7 +71,7 @@ create new job name is Job1
 
 ![createjob](images/ShooterScreenshot-32-12-05-20.png)
 
-copy and paste from github url : https://github.com/amantiwari1/jenkins_web_server..git
+copy and paste from github url : https://github.com/amantiwari1/keras_model_training.git
 
 go to Source Code Management and tick git
 
